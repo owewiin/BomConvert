@@ -1,0 +1,26 @@
+{
+  "RDAssistant": "Peggy",
+  "LayoutPerson": "\u672A\u5B9A",
+  "CircuitDesigner": "\u672A\u5B9A",
+  "RDAssistantList": [
+    "Peggy",
+    "Fish"
+  ],
+  "LayoutPersonList": [
+    "\u672A\u5B9A",
+    "WEI",
+    "Jane",
+    "Wuct",
+    "JDLee",
+    "Jason"
+  ],
+  "CircuitDesignerList": [
+    "\u672A\u5B9A",
+    "LSP",
+    "Jane",
+    "Jason",
+    "Kevin",
+    "Yanchi",
+    "Wuct"
+  ]
+}

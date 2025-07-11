@@ -1,0 +1,36 @@
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App.csproj.AssemblyReference.cache
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\App.baml
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\App.g.cs
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App_MarkupCompile.cache
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App.g.resources
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App.GeneratedMSBuildEditorConfig.editorconfig
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App.AssemblyInfoInputs.cache
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App.AssemblyInfo.cs
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App.csproj.CoreCompileInputs.cache
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\Morden App.exe
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\Morden App.deps.json
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\Morden App.runtimeconfig.json
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\Morden App.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\Morden App.pdb
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\MaterialDesignColors.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\MaterialDesignThemes.Wpf.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\Microsoft.Xaml.Behaviors.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App.csproj.Up2Date
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\refint\Morden App.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App.pdb
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App.genruntimeconfig.cache
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\ref\Morden App.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\MainWindow.baml
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\MainWindow.g.cs
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\ExcelDataReader.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\ExcelDataReader.DataSet.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\obj\Debug\net8.0-windows\Morden App_Content.g.cs
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\ClosedXML.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\ClosedXML.Parser.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\DocumentFormat.OpenXml.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\DocumentFormat.OpenXml.Framework.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\ExcelNumberFormat.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\RBush.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\SixLabors.Fonts.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Debug\net8.0-windows\System.IO.Packaging.dll

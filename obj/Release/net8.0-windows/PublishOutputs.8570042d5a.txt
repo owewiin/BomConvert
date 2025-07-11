@@ -1,0 +1,18 @@
+D:\Jason Data\C data\Publish\Morden App.exe
+D:\Jason Data\C data\Publish\Morden App.dll
+D:\Jason Data\C data\Publish\Morden App.deps.json
+D:\Jason Data\C data\Publish\Morden App.runtimeconfig.json
+D:\Jason Data\C data\Publish\Morden App.pdb
+D:\Jason Data\C data\Publish\ClosedXML.dll
+D:\Jason Data\C data\Publish\ClosedXML.Parser.dll
+D:\Jason Data\C data\Publish\DocumentFormat.OpenXml.dll
+D:\Jason Data\C data\Publish\DocumentFormat.OpenXml.Framework.dll
+D:\Jason Data\C data\Publish\ExcelDataReader.dll
+D:\Jason Data\C data\Publish\ExcelDataReader.DataSet.dll
+D:\Jason Data\C data\Publish\ExcelNumberFormat.dll
+D:\Jason Data\C data\Publish\MaterialDesignColors.dll
+D:\Jason Data\C data\Publish\MaterialDesignThemes.Wpf.dll
+D:\Jason Data\C data\Publish\Microsoft.Xaml.Behaviors.dll
+D:\Jason Data\C data\Publish\RBush.dll
+D:\Jason Data\C data\Publish\SixLabors.Fonts.dll
+D:\Jason Data\C data\Publish\System.IO.Packaging.dll

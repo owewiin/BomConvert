@@ -1,0 +1,18 @@
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\SchBom convert.exe
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\SchBom convert.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\SchBom convert.deps.json
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\SchBom convert.runtimeconfig.json
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\SchBom convert.pdb
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\ClosedXML.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\ClosedXML.Parser.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\DocumentFormat.OpenXml.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\DocumentFormat.OpenXml.Framework.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\ExcelDataReader.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\ExcelDataReader.DataSet.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\ExcelNumberFormat.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\MaterialDesignColors.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\MaterialDesignThemes.Wpf.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\Microsoft.Xaml.Behaviors.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\RBush.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\SixLabors.Fonts.dll
+D:\Jason Data\C data\Mircosoft App\202506\Morden App\bin\Release\net8.0-windows\publish\System.IO.Packaging.dll

@@ -1,0 +1,386 @@
+﻿<Window x:Class="SchBom_Convert.MainWindow"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SchBom Format Convert"
+        Height="450"
+        Width="800"
+        Background="White"
+        Cursor=""
+        ResizeMode="NoResize"  WindowStartupLocation="CenterScreen">
+    <DockPanel Cursor="">
+        <StackPanel DockPanel.Dock="Left" Width="200" Background="#2E3B4E" Cursor="">
+            <TextBlock Text="🌟 SchBom App" FontSize="18" Foreground="White" Margin="20"/>
+            <Button Content="🏠 首頁"
+                Style="{StaticResource MaterialDesignFlatButton}"
+                Foreground="White"
+                Margin="5"
+                Click="BackToMain_Click"/>
+            <Button Content="📤 匯出 Excel"
+                x:Name="ExportSideButton"
+                Style="{StaticResource MaterialDesignFlatButton}"
+                Foreground="White"
+                Margin="5"
+                Click="ExportButton_Click"/>
+            <Button Content="📝 預覽"
+                Style="{StaticResource MaterialDesignFlatButton}"
+                Foreground="White"
+                Margin="5"
+                Click="PreviewButton_Click"/>
+            <Button Content="⚙️ 人員設定"
+                Style="{StaticResource MaterialDesignFlatButton}"
+                Foreground="White"
+                Margin="5"
+                Click="SettingsButton_Click"/>
+            <Button Content="ℹ️ 轉換資訊"
+                Style="{StaticResource MaterialDesignFlatButton}"
+                Foreground="White"
+                Margin="5"
+                Click="ConversionInfoButton_Click"/>
+        </StackPanel>
+
+        <Grid x:Name="MainPanel">
+            <TextBlock
+        VerticalAlignment="Top"
+        HorizontalAlignment="Center"
+        Margin="0,30,0,0"
+        FontSize="24"
+        Foreground="#444">
+        <Run Language="zh-tw" Text="Welcome"/>
+            </TextBlock>
+
+            <TextBlock
+        x:Name="DateTextBlock"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Center"
+        Margin="0,84,0,0"
+        FontSize="16"
+        Foreground="#888"
+        Text="{Binding CurrentDate}" Height="25" />
+
+            <TextBox
+        x:Name="FilePathTextBox"
+        Width="433"
+        Height="50"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        materialDesign:HintAssist.Hint="檔案路徑"
+        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+        Margin="10,100,0,0" Cursor=""/>
+
+            <Button
+        Content="選擇檔案"
+        Width="120"
+        Height="36"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        Margin="448,114,0,0"
+        Style="{StaticResource MaterialDesignRaisedButton}"
+        Click="ChooseFile_Click" Cursor="Hand"/>
+
+            <CheckBox
+        x:Name="AutoOpenFileCheckBox"
+        Content="📂 匯出後自動開啟檔案"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        Margin="10,165,0,0"
+        FontSize="14"
+        Foreground="#666"
+        IsChecked="False"
+        Checked="AutoOpenFileCheckBox_Checked"
+        Unchecked="AutoOpenFileCheckBox_Unchecked"/>
+
+        </Grid>
+
+        <!-- 新增：轉換資訊面板 -->
+        <Grid x:Name="ConversionInfoPanel" Visibility="Collapsed">
+            <TextBlock Text="轉換資訊" FontSize="24" FontWeight="Bold" Foreground="#2E3B4E" Margin="0,20,0,10" HorizontalAlignment="Center"/>
+            <ListBox ItemsSource="{Binding ConversionMessages}" Margin="40,60,40,40" FontFamily="Consolas" FontSize="12"/>
+        </Grid>
+
+        <Grid x:Name="SettingsPanel" Visibility="Collapsed">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <Grid Margin="10" MaxWidth="650">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="390"/>
+                        <ColumnDefinition Width="Auto" MinWidth="25"/>
+                        <ColumnDefinition Width="*" MinWidth="0"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="👨‍💼 開發人員設定 👩‍💼"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Foreground="#2E3B4E"
+                           Margin="0,0,0,20"
+                           HorizontalAlignment="Center"/>
+
+                        <TextBlock Text="研發助理人員"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10"
+                           Foreground="#444"/>
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0" x:Name="RDAssistantComboBox"
+                                  Height="42"
+                                  HorizontalAlignment="Stretch"
+                                  Style="{StaticResource MaterialDesignFilledComboBox}"
+                                  materialDesign:HintAssist.Hint="選擇或輸入研發助理人員"
+                                  IsEditable="True"
+                                  Text="{Binding SelectedRDAssistant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedIndex="0"
+                                  SelectionChanged="RDAssistantComboBox_SelectionChanged"
+                                  LostFocus="RDAssistantComboBox_LostFocus">
+                                <ComboBoxItem Content="Peggy" />
+                                <ComboBoxItem Content="Fish" />
+                            </ComboBox>
+                            <Button Grid.Column="1" 
+                               ToolTip="新增人員"
+                               Width="40" 
+                               Height="36" 
+                               Margin="5,0,0,0"
+                               Style="{StaticResource MaterialDesignRaisedButton}"
+                               Background="#4CAF50"
+                               Foreground="White"
+                               Padding="0"
+                               Click="AddRDAssistant_Click">
+                                <materialDesign:PackIcon Kind="PlusBoxMultipleOutline" Width="18" Height="18"/>
+                            </Button>
+
+                            <!-- 刪除按鈕 -->
+                            <Button Grid.Column="2" 
+                               ToolTip="刪除人員"
+                               Width="40" 
+                               Height="36" 
+                               Margin="5,0,0,0"
+                               Style="{StaticResource MaterialDesignRaisedButton}"
+                               Background="PaleVioletRed"
+                               Foreground="White"
+                               Padding="0"
+                               Click="RemoveRDAssistant_Click">
+                                <materialDesign:PackIcon Kind="DeleteEmptyOutline" Width="18" Height="18"/>
+                            </Button>
+                        </Grid>
+
+                        <TextBlock Text="Layout人員"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10"
+                           Foreground="#444"/>
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0" x:Name="LayoutPersonComboBox"
+                                  Height="42"
+                                  HorizontalAlignment="Stretch"
+                                  Style="{StaticResource MaterialDesignFilledComboBox}"
+                                  materialDesign:HintAssist.Hint="選擇或輸入Layout人員"
+                                  IsEditable="True"
+                                  Text="{Binding SelectedLayoutPerson, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedIndex="0"
+                                  SelectionChanged="LayoutPersonComboBox_SelectionChanged"
+                                  LostFocus="LayoutPersonComboBox_LostFocus">
+                                <ComboBoxItem Content="未定" />
+                                <ComboBoxItem Content="WEI" />
+                                <ComboBoxItem Content="Jane" />
+                                <ComboBoxItem Content="Wuct" />
+                                <ComboBoxItem Content="JDLee" />
+                                <ComboBoxItem Content="Jason" />
+                            </ComboBox>
+                            <Button Grid.Column="1" 
+                               ToolTip="新增人員"
+                               Width="40" 
+                               Height="36" 
+                               Margin="5,0,0,0"
+                               Style="{StaticResource MaterialDesignRaisedButton}"
+                               Background="#4CAF50"
+                               Foreground="White"
+                               Padding="0"
+                               Click="AddLayoutPerson_Click">
+                                <materialDesign:PackIcon Kind="PlusBoxMultipleOutline" Width="18" Height="18"/>
+                            </Button>
+
+                            <!-- 刪除按鈕 -->
+                            <Button Grid.Column="2" 
+                               ToolTip="刪除人員"
+                               Width="40" 
+                               Height="36" 
+                               Margin="5,0,0,0"
+                               Style="{StaticResource MaterialDesignRaisedButton}"
+                               Background="PaleVioletRed"
+                               Foreground="White"
+                               Padding="0"
+                               Click="RemoveLayoutPerson_Click">
+                                <materialDesign:PackIcon Kind="DeleteEmptyOutline" Width="18" Height="18"/>
+                            </Button>
+                        </Grid>
+
+                        <TextBlock Text="線路設計人員"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10"
+                           Foreground="#444"/>
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0" x:Name="CircuitDesignerComboBox"
+                                  Height="42"
+                                  HorizontalAlignment="Stretch"
+                                  Style="{StaticResource MaterialDesignFilledComboBox}"
+                                  materialDesign:HintAssist.Hint="選擇或輸入線路設計人員"
+                                  IsEditable="True"
+                                  Text="{Binding SelectedCircuitDesigner, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedIndex="0"
+                                  SelectionChanged="CircuitDesignerComboBox_SelectionChanged"
+                                  LostFocus="CircuitDesignerComboBox_LostFocus">
+                                <ComboBoxItem Content="未定" />
+                                <ComboBoxItem Content="LSP" />
+                                <ComboBoxItem Content="Jane" />
+                                <ComboBoxItem Content="Jason" />
+                                <ComboBoxItem Content="Kevin" />
+                                <ComboBoxItem Content="Yanchi" />
+                            </ComboBox>
+                            <!-- 新增按鈕 -->
+                            <Button Grid.Column="1" 
+                               ToolTip="新增人員"
+                               Width="40" 
+                               Height="36" 
+                               Margin="5,0,0,0"
+                               Style="{StaticResource MaterialDesignRaisedButton}"
+                               Background="#4CAF50"
+                               Foreground="White"
+                               Padding="0"
+                               Click="AddCircuitDesigner_Click">
+                                <materialDesign:PackIcon Kind="PlusBoxMultipleOutline" Width="18" Height="18"/>
+                            </Button>
+
+                            <!-- 刪除按鈕 -->
+                            <Button Grid.Column="2" 
+                               ToolTip="刪除人員"
+                               Width="40" 
+                               Height="36" 
+                               Margin="5,0,0,0"
+                               Style="{StaticResource MaterialDesignRaisedButton}"
+                               Background="PaleVioletRed"
+                               Foreground="White"
+                               Padding="0"
+                               Click="RemoveCircuitDesigner_Click">
+                                <materialDesign:PackIcon Kind="DeleteEmptyOutline" Width="18" Height="18"/>
+                            </Button>
+                        </Grid>
+
+                        <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="-70,10,0,0">
+                            <Button Content="💾 儲存設定"
+                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                Background="#4CAF50"
+                                Foreground="White"
+                                Width="120"
+                                Height="36"
+                                Margin="70,0"
+                                Click="SaveSettingsButton_Click"/>
+                            <Button Content="🔙 返回"
+                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                                Width="120"
+                                Height="36"
+                                Margin="0,0"
+                                Click="BackToMain_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Border Grid.Column="2"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="2"
+                        Background="#F8F9FA"
+                        CornerRadius="10"
+                        Margin="0,0,0,0" Padding="20"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                        <StackPanel>
+                            <TextBlock Text="📋 當前設定"
+                               FontSize="14"
+                               FontWeight="Bold"
+                               Foreground="#666"
+                               Margin="0,0,0,10"/>
+                            <TextBlock x:Name="CurrentRDAssistantText"
+                               Text="研發助理：Peggy"
+                               FontSize="12"
+                               Foreground="#888"
+                               Margin="0,10"/>
+                            <TextBlock x:Name="CurrentLayoutPersonText"
+                               Text="Layout人員：未定"
+                               FontSize="12"
+                               Foreground="#888"
+                               Margin="0,10"/>
+                            <TextBlock x:Name="CurrentCircuitDesignerText"
+                               Text="線路設計：未定"
+                               FontSize="12"
+                               Foreground="#888"
+                               Margin="0,10"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+
+        <Grid x:Name="PreviewPanel" Visibility="Collapsed">
+            <TextBlock Text="📢 請再次確認替代料 (廠商/代理商)，如異常&#x0a;點擊儲存格並修改替代料格式同時提供(廠商/代理商)"
+                       TextWrapping="Wrap"
+                       FontSize="14"
+                       FontWeight="Bold"
+                       Foreground="PaleVioletRed"
+                       Margin="10,10,0,0"/>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Margin="10,10,10,0">
+                <Button Content="📤 匯出 Excel"
+                        x:Name="ExportPreviewButton"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Background="#4CAF50"
+                        Foreground="White"
+                        Margin="5,0"
+                        Click="ExportButton_Click"/>
+                <Button Content="🔙 返回"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Margin="5,0"
+                        Click="BackToMain_Click"/>
+            </StackPanel>
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto"
+                          Margin="0,50,0,0">
+                <DataGrid x:Name="PreviewGrid"
+                          AutoGenerateColumns="False"
+                          Margin="10"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="項次" Binding="{Binding IndexDisplay}" Width="50" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="名稱" Binding="{Binding PartName}" Width="100"/>
+                        <DataGridTextColumn Header="規格" Binding="{Binding Spec}" Width="150"/>
+                        <DataGridTextColumn Header="數量" Binding="{Binding QuantityDisplay}" Width="70" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="零件編號" Binding="{Binding Code}" Width="100"/>
+                        <DataGridTextColumn Header="單價" Binding="{Binding UnitPriceDisplay}" Width="70" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="小計" Binding="{Binding SubtotalDisplay}" Width="80" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="廠商" Binding="{Binding Vendor}" Width="150"/>
+                        <DataGridTextColumn Header="中國廠商" Binding="{Binding VendorCN}" Width="150"/>
+                        <DataGridTextColumn Header="備註" Binding="{Binding Note}" Width="200"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </ScrollViewer>
+        </Grid>
+
+    </DockPanel>
+</Window>

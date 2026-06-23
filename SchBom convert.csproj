@@ -16,6 +16,10 @@
 
   <ItemGroup>
     <Content Include="bitbug_favicon.ico" />
+    <!-- 版本歷史顯示用：app 從執行檔目錄讀 README.md，故複製到輸出 -->
+    <Content Include="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

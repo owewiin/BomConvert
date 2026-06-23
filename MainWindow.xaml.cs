@@ -371,29 +371,12 @@ namespace SchBom_Convert
                     return false;
 
                 // 排序和合併邏輯（與原有邏輯相同）
-                var sortedList = rawMainList.OrderBy(p =>
-                {
-                    if (p.Category == "SMD 零件")
-                    {
-                        var group = GetSortGroup(p);
-                        return $"A-{group.sizeOrder:D3}-{group.typeOrder:D2}-{GetSortWeight(p)}";
-                    }
-                    else if (p.Category == "DIP 零件")
-                    {
-                        if ((p.PartName?.Contains("電解電容") ?? false) || (p.PartName?.Contains("金屬皮膜電容") ?? false))
-                            return $"B-04-{GetCapacitorSortKey(p.Spec)}-{p.PartName}";
-                        return $"B-{GetDipPartOrder(p):D2}-{p.PartName}";
-                    }
-                    else
-                    {
-                        return $"Z-{p.PartName}";
-                    }
-                }).ToList();
+                var sortedList = rawMainList.OrderBy(GetMainSortKey).ToList();
 
                 var mergedList = MergeDuplicateItems(sortedList);
                 int index = 1;
                 var grouped = mergedList
-                    .OrderBy(p => p.Category == "SMD 零件" ? 0 : p.Category == "DIP 零件" ? 1 : 2)
+                    .OrderBy(GetCategoryGroupOrder)
                     .GroupBy(p => p.Category);
 
                 foreach (var group in grouped)
@@ -1016,24 +999,7 @@ namespace SchBom_Convert
                     }
 
                     var sortedList = rawMainList
-                        .OrderBy(p =>
-                        {
-                            if (p.Category == "SMD 零件")
-                            {
-                                var group = GetSortGroup(p);
-                                return $"A-{group.sizeOrder:D3}-{group.typeOrder:D2}-{GetSortWeight(p)}";
-                            }
-                            else if (p.Category == "DIP 零件")
-                            {
-                                if ((p.PartName?.Contains("電解電容") ?? false) || (p.PartName?.Contains("金屬皮膜電容") ?? false))
-                                    return $"B-04-{GetCapacitorSortKey(p.Spec)}-{p.PartName}";
-                                return $"B-{GetDipPartOrder(p):D2}-{p.PartName}";
-                            }
-                            else
-                            {
-                                return $"Z-{p.PartName}";
-                            }
-                        })
+                        .OrderBy(GetMainSortKey)
                         .ToList();
 
                     // 合併相同零件
@@ -1041,7 +1007,7 @@ namespace SchBom_Convert
 
                     int index = 1;
                     var grouped = mergedList
-                        .OrderBy(p => p.Category == "SMD 零件" ? 0 : p.Category == "DIP 零件" ? 1 : 2)
+                        .OrderBy(GetCategoryGroupOrder)
                         .GroupBy(p => p.Category);
 
                     foreach (var group in grouped)
@@ -1795,6 +1761,31 @@ private bool IsInvalidValue(string value, string[] invalidPatterns)
         value.Contains(pattern, StringComparison.OrdinalIgnoreCase));
 }
 
+        // 主排序鍵：單檔匯出與合併匯出共用，避免兩處規則「改一邊漏一邊」
+        // （本體由原 OrderBy lambda 逐字搬移，行為不變）
+        private static string GetMainSortKey(BomPreviewItem p)
+        {
+            if (p.Category == "SMD 零件")
+            {
+                var group = GetSortGroup(p);
+                return $"A-{group.sizeOrder:D3}-{group.typeOrder:D2}-{GetSortWeight(p)}";
+            }
+            else if (p.Category == "DIP 零件")
+            {
+                if ((p.PartName?.Contains("電解電容") ?? false) || (p.PartName?.Contains("金屬皮膜電容") ?? false))
+                    return $"B-04-{GetCapacitorSortKey(p.Spec)}-{p.PartName}";
+                return $"B-{GetDipPartOrder(p):D2}-{p.PartName}";
+            }
+            else
+            {
+                return $"Z-{p.PartName}";
+            }
+        }
+
+        // 大分類顯示順序：SMD → DIP → 其他（單檔/合併匯出共用）
+        private static int GetCategoryGroupOrder(BomPreviewItem p)
+            => p.Category == "SMD 零件" ? 0 : p.Category == "DIP 零件" ? 1 : 2;
+
         private static int GetDipPartOrder(BomPreviewItem p)
         {
             string name = p.PartName ?? "";
@@ -1987,8 +1978,9 @@ private bool IsInvalidValue(string value, string[] invalidPatterns)
                 _ => 1
             };
 
-            // 格式化：數值(12位，含小數) + 單位權重 + 精度標記
-            return $"{numericValue:000000000000.000}-{unitWeight}-{precisionSuffix}";
+            // 格式化：單位權重 + 數值(12位，含小數) + 精度標記
+            // 單位權重排在最前 → 依實際阻值排序（R 段 → K 段 → M 段，各段內再按數值；M 才會排到最後）
+            return $"{unitWeight}-{numericValue:000000000000.000}-{precisionSuffix}";
         }
         // 電容排序方法
         private static string GetCapacitorSortKey(string spec)
@@ -2081,6 +2073,7 @@ private bool IsInvalidValue(string value, string[] invalidPatterns)
 
                 part.Contains("合金電阻") ? 2 :
                 part.Contains("鉭電") ? 3 :
+                part.Contains("鋁電") ? 3 :   // 鋁電解電容：歸電解電容群，weight 走容值→電壓（見 GetSortWeight）
 
                 part.Contains("電感") ? 4 :
                 part.Contains("三端濾波器") ? 5 :
@@ -2133,6 +2126,8 @@ private bool IsInvalidValue(string value, string[] invalidPatterns)
 
             if (name.Contains("電阻")) return GetResistorSortKey(spec);
             if (name.Contains("電容")) return GetCapacitorSortKey(spec);
+            if (name.Contains("鋁電")) return $"AL-{GetCapacitorSortKey(spec)}"; // 鋁電解：依容值→電壓
+            if (name.Contains("鉭電")) return $"TA-{GetCapacitorSortKey(spec)}"; // 鉭質電容：依容值→電壓（與鋁電同 typeOrder，前綴分塊避免交錯）
 
             // 其他元件的排序邏輯保持不變
             if (name.Contains("電感")) return $"L-{GetSizeOrder(ExtractSMDSize(spec)):D3}";

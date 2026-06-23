@@ -1774,6 +1774,8 @@ private bool IsInvalidValue(string value, string[] invalidPatterns)
             {
                 if ((p.PartName?.Contains("電解電容") ?? false) || (p.PartName?.Contains("金屬皮膜電容") ?? false))
                     return $"B-04-{GetCapacitorSortKey(p.Spec)}-{p.PartName}";
+                if (p.PartName?.Contains("端子座") ?? false)
+                    return $"B-34-{GetTerminalSortKey(p)}-{p.PartName}";   // 端子座/連接器：族群分塊→組內依腳位
                 return $"B-{GetDipPartOrder(p):D2}-{p.PartName}";
             }
             else
@@ -1850,7 +1852,7 @@ private bool IsInvalidValue(string value, string[] invalidPatterns)
                 // DIP 連接器
                 name.Contains("排針") ? 32 :
                 name.Contains("排母") ? 33 :
-                name.Contains("端子座") ? GetTerminalBlockOrder(p) :
+                name.Contains("端子座") ? 34 :                       // 細排移至 GetMainSortKey 端子座特例（GetTerminalSortKey）
                 name.Contains("端子") ? 39 :
                 name.Contains("歐規端子座") ? 39 :
                 name.Contains("接線座") ? 39 :
@@ -1872,87 +1874,48 @@ private bool IsInvalidValue(string value, string[] invalidPatterns)
             return dipOrder;
         }
 
-        // 端子座編號排序方法
-        private static int GetTerminalBlockOrder(string spec)
+        // 端子座/連接器排序子鍵：族群分塊 → 組內依腳位（取代舊 GetTerminalBlockOrder 系列）
+        private static string GetTerminalSortKey(BomPreviewItem p)
         {
-            // 預設拍在最前或最後？這裡選最後（MaxValue → 999）
-            const int MAX_PINS = 999;
-
-            if (string.IsNullOrWhiteSpace(spec))
-                return 34 * 1000 + MAX_PINS; // 沒內容：視為 2021 系列、排最後
-
-            spec = spec.Trim();
-
-            // 抓系列與腳位數
-            var m = Regex.Match(spec, @"\b(?<series>\d{4})\b(?:\s*[-–—]\s*(?<pins>\d{1,3}))?",
-                                RegexOptions.Compiled);
-
-            // 系列序
-            string series = m.Success ? m.Groups["series"].Value : "";
-            int seriesOrder = series switch
+            // 型號可能在「規格」或「零件編號」欄；依序嘗試，取第一個能抓到腳位的欄位
+            foreach (var field in new[] { p.Spec, p.Code, p.PartName })
             {
-                "2021" => 34,
-                "2532" => 35,
-                "3961" => 36,
-                _ => 37, // 其他系列靠後
-            };
-
-            // 腳位數
-            int pinCount = MAX_PINS;
-            if (m.Success && m.Groups["pins"].Success)
-            {
-                if (int.TryParse(m.Groups["pins"].Value, out var n))
-                    pinCount = n; // "01" 會變成 1，自動用數值排序
+                if (string.IsNullOrWhiteSpace(field)) continue;
+                var (family, pins) = ParseTerminal(field);
+                if (pins != 999) return $"{family}-{pins:D3}";
             }
-
-            // 單一整數鍵：系列優先，其次腳位數
-            return seriesOrder * 1000 + pinCount;
-        }
-        // 歐規端子（例：ME030-350-02P、或 3.5MM 02P）排序：先節距、再 PIN
-        private static int GetTerminalBlockOrder(BomPreviewItem p)
-        {
-            // 優先從 Code，其次 Spec/PartName 來抓像 ME030-350-02P 的字樣
-            string src = $"{p.Code ?? ""} {p.Spec ?? ""} {p.PartName ?? ""}";
-            var order = TryGetEuroTerminalOrder(src);
-            if (order.HasValue) return order.Value;
-
-            // 兜底：舊規則（系列號＋腳位）
-            return GetTerminalBlockOrder(p.Spec ?? "");
+            // 都沒抓到腳位：用規格的 family、腳位排該族群最後
+            var (fam, _) = ParseTerminal(p.Spec ?? p.Code ?? p.PartName ?? "");
+            return $"{fam}-999";
         }
 
-        // 解析 -350-02P 或 3.5MM 02P，回傳排序鍵：34*1_000_000 + pitchCode*1_000 + pins
-        private static int? TryGetEuroTerminalOrder(string text)
+        // 通用解析：回傳 (族群, 腳位數)。腳位依序嘗試多種樣式；抓不到 → 該族群內排最後。
+        private static (string family, int pins) ParseTerminal(string raw)
         {
-            if (string.IsNullOrWhiteSpace(text)) return null;
-            text = text.ToUpperInvariant();
+            const int MAX = 999;
+            if (string.IsNullOrWhiteSpace(raw)) return ("ZZZZ", MAX);
+            string t = raw.ToUpperInvariant().Trim();
 
-            // 方案 A：...-350-02P / ...-508-12P
-            var m = Regex.Match(text, @"-(?<pitch>\d{3,4})-(?<pins>\d{1,3})\s*P(?:IN)?\b");
-            if (m.Success
-                && int.TryParse(m.Groups["pitch"].Value, out var pitchCodeA)
-                && int.TryParse(m.Groups["pins"].Value, out var pinsA))
-            {
-                pitchCodeA = Math.Clamp(pitchCodeA, 1, 9999);
-                pinsA = Math.Clamp(pinsA, 1, 999);
-                return 39 * 1_000_000 + pitchCodeA * 1_000 + pinsA;
-            }
+            // 規則1：開頭單一字母+數字（P4、M7）→ family=字母、pins=數字
+            var lead = Regex.Match(t, @"^([A-Z])(\d{1,3})\b");
+            if (lead.Success)
+                return (lead.Groups[1].Value, int.Parse(lead.Groups[2].Value));
 
-            // 方案 B：3.5MM 02P / 3.81MM 12P
-            var mPitch = Regex.Match(text, @"(?<mm>\d+(?:\.\d+)?)\s*MM\b");
-            var mPins = Regex.Match(text, @"(?<pins>\d{1,3})\s*P(?:IN)?\b");
-            if (mPitch.Success && mPins.Success
-                && double.TryParse(mPitch.Groups["mm"].Value, System.Globalization.NumberStyles.Float,
-                                   System.Globalization.CultureInfo.InvariantCulture, out var mm)
-                && int.TryParse(mPins.Groups["pins"].Value, out var pinsB))
-            {
-                int pitchCodeB = (int)Math.Round(mm * 100.0); // 3.5mm→350、3.81mm→381
-                pitchCodeB = Math.Clamp(pitchCodeB, 1, 9999);
-                pinsB = Math.Clamp(pinsB, 1, 999);
-                return 34 * 1_000_000 + pitchCodeB * 1_000 + pinsB;
-            }
+            // family：開頭連續英數（停在 '-' 或空白），例：ME040 / MX122 / CDS19 / 2530H
+            var fam = Regex.Match(t, @"^([A-Z0-9]+)");
+            string family = fam.Success ? fam.Groups[1].Value : "ZZZZ";
 
-            return null;
-        }        
+            // 規則2：歐規 -<節距>-<腳位>[P/G]，例：-508-4P、-500-2G
+            var euro = Regex.Match(t, @"-\d{3,4}-(\d{1,3})\s*[PG]\b");
+            if (euro.Success) return (family, int.Parse(euro.Groups[1].Value));
+
+            // 規則3：字尾 <數字>(P|PIN|G)，例：07P、2G、4PIN
+            var tail = Regex.Match(t, @"(\d{1,3})\s*(?:PIN|P|G)\b");
+            if (tail.Success) return (family, int.Parse(tail.Groups[1].Value));
+
+            return (family, MAX);
+        }
+
         // 電阻排序方法 - 按照數字大小排序
         private static string GetResistorSortKey(string spec)
         {

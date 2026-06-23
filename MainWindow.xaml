@@ -12,31 +12,41 @@
         <StackPanel DockPanel.Dock="Left" Width="200" Background="#2E3B4E" Cursor="">
             <TextBlock Text="🌟 SchBom App" FontSize="18" Foreground="White" Margin="20"/>
             <Button Content="🏠 首頁"
-                Style="{StaticResource MaterialDesignFlatButton}"
-                Foreground="White"
-                Margin="5"
-                Click="BackToMain_Click"/>
-            <Button Content="📤 匯出 Excel"
-                x:Name="ExportSideButton"
-                Style="{StaticResource MaterialDesignFlatButton}"
-                Foreground="White"
-                Margin="5"
-                Click="ExportButton_Click"/>
+        Style="{StaticResource MaterialDesignFlatButton}"
+        Foreground="White"
+        Margin="5"
+        Click="BackToMain_Click"/>
+            <Button Content="📤 匯出單頁 Excel"
+        x:Name="ExportSideButton"
+        Style="{StaticResource MaterialDesignFlatButton}"
+        Foreground="White"
+        Margin="5"
+        Click="ExportButton_Click"/>
             <Button Content="📝 預覽"
-                Style="{StaticResource MaterialDesignFlatButton}"
-                Foreground="White"
-                Margin="5"
-                Click="PreviewButton_Click"/>
+        Style="{StaticResource MaterialDesignFlatButton}"
+        Foreground="White"
+        Margin="5"
+        Click="PreviewButton_Click" Cursor="Hand"/>
             <Button Content="⚙️ 人員設定"
-                Style="{StaticResource MaterialDesignFlatButton}"
-                Foreground="White"
-                Margin="5"
-                Click="SettingsButton_Click"/>
+        Style="{StaticResource MaterialDesignFlatButton}"
+        Foreground="White"
+        Margin="5"
+        Click="SettingsButton_Click"/>
             <Button Content="ℹ️ 轉換資訊"
-                Style="{StaticResource MaterialDesignFlatButton}"
-                Foreground="White"
-                Margin="5"
-                Click="ConversionInfoButton_Click"/>
+        Style="{StaticResource MaterialDesignFlatButton}"
+        Foreground="White"
+        Margin="5"
+        Click="ConversionInfoButton_Click"/>
+            <Button Content="🧩 元件映射"
+        Style="{StaticResource MaterialDesignFlatButton}"
+        Foreground="White"
+        Margin="5"
+        Click="ComponentMappingButton_Click"/>
+            <Button Content="📋 版本歷史"
+        Style="{StaticResource MaterialDesignFlatButton}"
+        Foreground="White"
+        Margin="5,100"
+        Click="VersionHistoryButton_Click"/>
         </StackPanel>
 
         <Grid x:Name="MainPanel">
@@ -68,6 +78,30 @@
         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
         Margin="10,100,0,0" Cursor=""/>
 
+            <TextBox
+        x:Name="CustomerNameTextBox"
+        LostFocus="CustomerNameTextBox_LostFocus"
+        Panel.ZIndex="10"
+        Width="212"
+        Height="50"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        materialDesign:HintAssist.Hint="客戶名稱"
+        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+        Margin="356,285,0,0" />
+
+            <TextBox
+        x:Name="ProductNameTextBox"
+        Panel.ZIndex="10"      
+        LostFocus="ProductNameTextBox_LostFocus"
+        Width="212"
+        Height="50"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        materialDesign:HintAssist.Hint="產品名稱"
+        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+        Margin="356,340,0,0" />
+            
             <Button
         Content="選擇檔案"
         Width="120"
@@ -77,6 +111,17 @@
         Margin="448,114,0,0"
         Style="{StaticResource MaterialDesignRaisedButton}"
         Click="ChooseFile_Click" Cursor="Hand"/>
+
+            <Button
+        Content="多選檔案"
+        Width="120"
+        Height="36"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        Margin="448,200,0,0"
+        Style="{StaticResource MaterialDesignRaisedButton}"
+        Background="#CC4165"
+        Click="ChooseMultipleFiles_Click" Cursor="Hand"/>
 
             <CheckBox
         x:Name="AutoOpenFileCheckBox"
@@ -89,6 +134,32 @@
         IsChecked="False"
         Checked="AutoOpenFileCheckBox_Checked"
         Unchecked="AutoOpenFileCheckBox_Unchecked"/>
+
+            <Button
+        x:Name="MergeExportButton"
+        Content="📤 合併匯出"
+        Width="120"
+        Height="36"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        Margin="10,200,0,0"
+        Style="{StaticResource MaterialDesignRaisedButton}"
+        Background="#4CAF50"
+        Foreground="White"
+        Click="MergeExportButton_Click"
+        Visibility="Collapsed" Cursor="Hand"/>
+
+            <ScrollViewer
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        Margin="10,250,0,0"
+        Width="580"
+        Height="150"
+        VerticalScrollBarVisibility="Auto"
+        Visibility="Collapsed"
+        x:Name="SelectedFilesScrollViewer">
+                <StackPanel x:Name="SelectedFilesPanel" Orientation="Vertical"/>
+            </ScrollViewer>
 
         </Grid>
 
@@ -132,13 +203,10 @@
                                   Style="{StaticResource MaterialDesignFilledComboBox}"
                                   materialDesign:HintAssist.Hint="選擇或輸入研發助理人員"
                                   IsEditable="True"
+                                  ItemsSource="{Binding RDAssistantList}"
                                   Text="{Binding SelectedRDAssistant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  SelectedIndex="0"
                                   SelectionChanged="RDAssistantComboBox_SelectionChanged"
-                                  LostFocus="RDAssistantComboBox_LostFocus">
-                                <ComboBoxItem Content="Peggy" />
-                                <ComboBoxItem Content="Fish" />
-                            </ComboBox>
+                                  LostFocus="RDAssistantComboBox_LostFocus"/>
                             <Button Grid.Column="1" 
                                ToolTip="新增人員"
                                Width="40" 
@@ -184,17 +252,10 @@
                                   Style="{StaticResource MaterialDesignFilledComboBox}"
                                   materialDesign:HintAssist.Hint="選擇或輸入Layout人員"
                                   IsEditable="True"
+                                  ItemsSource="{Binding LayoutPersonList}"
                                   Text="{Binding SelectedLayoutPerson, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  SelectedIndex="0"
                                   SelectionChanged="LayoutPersonComboBox_SelectionChanged"
-                                  LostFocus="LayoutPersonComboBox_LostFocus">
-                                <ComboBoxItem Content="未定" />
-                                <ComboBoxItem Content="WEI" />
-                                <ComboBoxItem Content="Jane" />
-                                <ComboBoxItem Content="Wuct" />
-                                <ComboBoxItem Content="JDLee" />
-                                <ComboBoxItem Content="Jason" />
-                            </ComboBox>
+                                  LostFocus="LayoutPersonComboBox_LostFocus"/>
                             <Button Grid.Column="1" 
                                ToolTip="新增人員"
                                Width="40" 
@@ -240,17 +301,10 @@
                                   Style="{StaticResource MaterialDesignFilledComboBox}"
                                   materialDesign:HintAssist.Hint="選擇或輸入線路設計人員"
                                   IsEditable="True"
+                                  ItemsSource="{Binding CircuitDesignerList}"
                                   Text="{Binding SelectedCircuitDesigner, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  SelectedIndex="0"
                                   SelectionChanged="CircuitDesignerComboBox_SelectionChanged"
-                                  LostFocus="CircuitDesignerComboBox_LostFocus">
-                                <ComboBoxItem Content="未定" />
-                                <ComboBoxItem Content="LSP" />
-                                <ComboBoxItem Content="Jane" />
-                                <ComboBoxItem Content="Jason" />
-                                <ComboBoxItem Content="Kevin" />
-                                <ComboBoxItem Content="Yanchi" />
-                            </ComboBox>
+                                  LostFocus="CircuitDesignerComboBox_LostFocus"/>
                             <!-- 新增按鈕 -->
                             <Button Grid.Column="1" 
                                ToolTip="新增人員"
@@ -336,12 +390,12 @@
         </Grid>
 
         <Grid x:Name="PreviewPanel" Visibility="Collapsed">
-            <TextBlock Text="📢 請再次確認替代料 (廠商/代理商)，如異常&#x0a;點擊儲存格並修改替代料格式同時提供(廠商/代理商)"
+            <TextBlock Text="📢 多檔匯入目前暫不支援預覽功能"
                        TextWrapping="Wrap"
                        FontSize="14"
                        FontWeight="Bold"
                        Foreground="PaleVioletRed"
-                       Margin="10,10,0,0"/>
+                       Margin="10,17,0,0"/>
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
@@ -379,6 +433,23 @@
                         <DataGridTextColumn Header="備註" Binding="{Binding Note}" Width="200"/>
                     </DataGrid.Columns>
                 </DataGrid>
+            </ScrollViewer>
+        </Grid>
+
+        <Grid x:Name="VersionHistoryPanel" Visibility="Collapsed">
+            <TextBlock Text="版本歷史" FontSize="24" FontWeight="Bold" Foreground="#2E3B4E" Margin="0,20,0,10" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,0">
+                <Button Content="🔙 返回"
+                Style="{StaticResource MaterialDesignOutlinedButton}"
+                Margin="5,0"
+                Click="BackToMain_Click"/>
+            </StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="40,60,40,40">
+                <TextBlock x:Name="VersionHistoryTextBlock" 
+                   FontFamily="Consolas" 
+                   FontSize="12" 
+                   TextWrapping="Wrap"
+                   Foreground="#333"/>
             </ScrollViewer>
         </Grid>
 

@@ -1,0 +1,11 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+
+# User-specific files
+*.user
+*.suo
